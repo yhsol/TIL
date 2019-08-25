@@ -1,0 +1,448 @@
+React v16.8 introduced Hooks which provide the ability to extract state and the React lifecycle into functions 
+that can be utilized across components in your app, making it easy to share logic.
+리액트 v16.8 에는 state 값을 확장하고, 리액트의 라이프사이클 메서드를 함수 안에 넣어 로직을 공유하기 쉽게 하는 hooks 를 도입하였다.
+Hooks have been met with excitement and rapid adoption, and the React team even imagines them replacing class components eventually.
+Hooks 는 신나고 빠르게 적용되기 시작했고, 리액트 팀은 클래스 컴포넌트의 대체까지도 고려하고 있다.
+
+Previously in React, the way to share logic was through Higher Order Components and Render Props.
+그 이전까지 리액트에서 로직을 공유하기 위해서는 HOC 와 Render Props 를 사용해왔다.
+Hooks offer a much simpler method to reuse code and make our components DRY.
+Hooks 는 더욱 간결한 메서드를 제공하여 코드를 재사용하고 컴포넌트를 깔끔하게 돕는다.
+
+This article will show the changes to TypeScript integration with React and how to add types to hooks as well as your own custom hooks.
+이 글은 리액트와 타입스크립트의 통합의 변경 사항, hooks 와 custom hooks 에도 타입을 추가하는 방법을 보여주게 된다.
+
+The type definitions were pulled from @types/react.
+타입 정의는 @types/react 로부터 가져왔다.
+Some examples were derived from react-typescript-cheatsheet, so refer to it for a comprehensive overview of React and TypeScript.
+몇몇 예제들은 react-typescript-cheatsheet 으로부터 가져왔으므로, React 와 Typescript 의 포괄적인 개요로써 참조해도 좋겠다.
+Other examples and the definition of the hooks have been pulled from the official docs.
+그밖에 예제와 hooks 의 정의들은 공식 문서로부터 가져왔다.
+
+Changes to Functional Component with TypeScript
+Changes to Functional Component with TypeScript
+Previously function components in React were called “Stateless Function Components”, meaning they were pure functions.
+이전까지 리액트에서 function components 는 순수 함수라는 뜻으로 "“Stateless Function Components"로 불렸다.
+With the introduction of hooks, function components can now contain state and access the React lifecycle.
+hooks 의 도입으로, function components 는 state 를 가질 수 있게되었고, 리액트 라이프사이클에 접근할 수 있게 되었다. 
+To align with this change, we now type our components as React.FC or React.FunctionComponent instead of React.SFC.
+이 변화에 맞게 우리는 컴포넌트에 React.SFC 대신에 React.FC 또는 React.FunctionComponent 라는 타입을 지정한다.
+```
+
+import * as React from 'react'
+
+interface IProps {
+  // ... props interface 
+}
+
+// NEW syntax for typing function components
+const MyNewComponent: React.FC<IProps> = (props) => {...};
+                                                  
+// OLD syntax for typing function components
+const MyOldComponent: React.SFC<IProps> = (props) => {...};
+```
+
+By typing our component as an FC, the React TypeScripts types allow us to handle children and defaultProps correctly.
+컴포넌트를 FC 로 타이핑하므로써, 리액트 타입스크립트 타입은 children 과 defaultProps 를 정확히 다룰 수 있게 한다.
+In addition, it provides types for context, propTypes, contextTypes, defaultProps, displayName.
+그에 더해, context, propTypes, contextTypes, defaultProps, displayName 의 타입을 제공한다.
+
+It corresponds to these props for FC / FunctionComponent:
+이것은 FC / FunctionComponent 에 일치하는 props 이다.
+```
+
+interface FunctionComponent<P = {}> {
+  (props: P & { children?: ReactNode }, context?: any): ReactElement | null;
+  propTypes?: WeakValidationMap<P>;
+  contextTypes?: ValidationMap<any>;
+  defaultProps?: Partial<P>;
+  displayName?: string;
+}
+```
+
+NOTE: The React team is discussing removing defaultProps from function components.
+NOTE: 리액트팀은 function components 로부터 defaultProps 의 제외에 대한 논의를 하고 있다.
+It adds unnecessary complexity because default function arguments work equally as well without needing to introduce a new concept beyond standard JavaScript.
+표준 JavaScript 이외의 새로운 개념을 도입하지 않고도 기본 함수 인수가 동일하게 작동하기 때문에 불필요한 복잡성이 더해지기 때문이다.
+
+Quick Introduction to Hooks
+Hooks are simply functions that allow us to manage state, utilize the React lifecycle, and connect to the React internals such as context.
+기본적으로 Hooks 는 state 를 관리하고, 리액트 라이프사이클을 이용하고, 리액트 내부를 context 와 같이 연결하는 함수이다.
+Hooks are imported from the react library and can only be used in function components:
+Hooks 는 리액트 라이브러리로부터 가져오고, 오직 함수형 컴포넌트에서만 사용 할 수 있다.
+
+```
+import * as React from 'react'
+const FunctionComponent: React.FC = () => {
+  const [count, setCount] = React.useState(0) // The useState hook
+}
+```
+
+React includes 10 hooks by default. 3 of the hooks are considered the “basic” or core hooks which you will use most frequently.
+리액트는 기본적으로 10개의 hooks 를 갖고있다. 그 중 가장 자주 사용 될 3개를 기본 또는 중심으로 여겨진다.
+ There are 7 additional “advanced” hooks which are most often utilized for edge cases.
+그 외 7개의 "advanced" hooks 가 더 있고, 대부분 특정 상황에 사용한다.
+
+Hooks according to the official React docs:
+Basic Hooks
+useState
+useEffect
+useContext
+Advanced Hook
+useReducer
+useCallback
+useMemo
+useRef
+useImperativeHandle
+useLayoutEffect
+useDebugValue
+
+While hooks alone are useful, they become even more powerful with the ability to combine them into custom hook functions.
+hooks 는 그 자체로도 유용하지만, custom hook 함수와 함께 사용할 경우 더욱 강렬해 질 수 있다.
+By building your own hooks, you are able to extract React logic into reusable functions that can simply be imported into our components.
+자체 hooks 를 구축함으로써, 리액트 로직을 재사용 가능한 함수로 추출하여 컴포넌트로 간단히 가져올 수 있다. 
+ The only caveat to hooks is that you must follow some basic rules.
+ 오직 유의해야 할 것은 몇가지의 기본 규칙을 따라야 한다는 것이다.
+
+ useState with TypeScript
+useState is a hook that allows us to replace this.state from class components.
+useState 는 클래스형 컴포넌트의 this.state 를 대체할 수 있는 hook 이다.
+We execute the hook which returns an array containing the current state value and a function to update the state.
+useState 는 현재 상태값과 상태를 업데이트하는 함수를 포함한 배열을 반환합니다.
+When the state is updated, it causes a re-render of the component. 
+상태가 업데이트 되면, 컴포넌트는 다시 렌더됩니다.
+The code below shows a simple useState hook:
+아래는 usestate hook 의 간단한 예 입니다.
+```
+
+import * as React from 'react';
+
+const MyComponent: React.FC = () => {
+  const [count, setCount] = React.useState(0);
+  return (
+    <div onClick={() => setCount(count + 1)}>
+      {count}
+    </div>
+  );
+};
+```
+
+The state can be any JavaScript type, and above we made it a number.
+state 는 어떤 자바스크립트 타입도 가능하며, 위 예는 number 타입으로 만들었습니다.
+The set state function is a pure function that will specify how to update the state and will always return a value of the same type.
+set state 함수는 상태를 업데이트하는 방법을 지정하고 항상 같은 타입의 값을 반환하는 순수 함수입니다.
+
+With simple functions, useState can infer the type from the initial value and return value based on the value supplied to the function.
+간단한 함수를 사용하여, useState는 함수에 제공된 값을 기반으로 초기값 및 리턴값에서 타입을 유추합니다.
+ For more complex state, the useState<T> is a generic where we can specify the type.
+ 보다 복잡한 상태의 경우 useState<T>는 타입 지정할 수있는 일반적인 위치입니다.
+  The example below shows a user object that can be null.
+  아래 예제는 user 객체가 null 일 수 있음을 보여줍니다.
+  ```
+  
+import * as React from 'react';
+
+interface IUser {
+  username: string;
+  email:  string;
+  password: string;
+}
+
+const ComplexState = ({ initialUserData }) => {
+  const [user, setUser] = React.useState<IUser | null>(initialUserData);
+  
+  if (!user) {
+    // do something else when our user is null
+  }
+
+  return (
+    <form>
+      <input value={user.username} onChange={e => setUser({...user, username: e.target.value})} />
+      <input value={user.email} onChange={e => setUser({...user, email: e.target.value})} />
+      <input value={user.password} onChange={e => setUser({...user, password: e.target.value})} />
+    </form>  
+  );
+}
+```
+The official typing is the following:
+공식 타이핑은 다음과 같습니다.
+```
+
+function useState<S>(initialState: S | (() => S)): [S, Dispatch<SetStateAction<S>>];
+type Dispatch<A> = (value: A) => void;
+type SetStateAction<S> = S | ((prevState: S) => S);
+```
+TODO: (이 부분은 잘 이해가 가지 않는다.)
+
+useEffect with TypeScript
+The useEffect is how we manage side effects such as API calls and also utilize the React lifecycle in function components.
+useEffect 는 API 호출과 같은 사이트 이펙트를 관리하고, 리액트 라이프 사이클을 이용하는 방법입니다.
+useEffect takes a callback function as its argument, and the callback can return a clean-up function.
+useEffect는 콜백 함수를 인수로 사용하며 콜백은 clean-up function(정리 함수)를 리턴 할 수 있습니다.
+ The callback will execute on componentDidMount and componentDidUpate, and the clean-up function will execute on componentWillUnmount.
+콜백은 componentDidMount 및 componentDidUpate에서 실행되고 정리 함수는 componentWillUnmount에서 실행됩니다.
+```
+
+useEffect(() => {
+  const subscription = props.source.beginAPIPoll();
+  return () => {
+    // Clean up the subscription
+    subscription.cancelAPIPoll();
+  };
+});
+```
+By default useEffect will be called on every render,
+but you can also pass an optional second argument which allows you to execute the useEffect function
+only if a value changes or only on the initial render.
+기본적으로 useEffect 는 매 렌더시마다 호출되지만, 값이 변경되거나, 초기 렌더링에서만 useEffect 함수를 실행할 수 있는 두번째 optional 인수를 전달할 수도 있습니다.
+ The second optional argument is an array of values that will only re-execute the effect if one of them changes.
+ 두 번째 선택적 인수는 값 중 하나가 변경된 경우에만 다시 실행하는 값의 배열입니다.
+  If the array is empty, it will only call useEffect on the initial render. 
+  해당 배열이 비어있다면, 초기 렌더에서만 useEffect 를 호출합니다.
+  For a more comprehensive understanding of how it works, refer to the official docs.
+작동 방식에 대한 보다 포괄적인 이해는 공식 문서를 참조하세요.
+
+When using hooks, you should only return undefined or a function.
+hooks 를 사용할 때는 오직 undefined 또는 함수를 반환해야 합니다.
+ If you return any other value, both React and TypeScript will give you an error.
+ 그 외의 값을 반환한다면 React 와 TypeScript 는 에러가 발생할 것입니다.
+  If you use an arrow function as your callback, you must be careful to ensure that you are not implicitly returning a value.
+  화살표 함수를 콜백으로 사용하는 경우 암시적으로 값을 반환하지 않도록 주의해야합니다.
+   For example, setTimeout returns an integer in the browser:
+   예를 들어 setTimeout은 브라우저에서 정수를 반환합니다.
+```
+
+function DelayedEffect(props: { timerMs: number }) {
+  const { timerMs } = props;
+  // ** BAD! ** setTimeout implicitly returns a number because the arrow function body isn't wrapped in curly braces
+  useEffect(() => setTimeout(() => {/* do stuff */}, timerMs), [timerMs])
+  // **
+  return null
+}
+```
+// TODO: 중요하면서도 헷갈리기 쉬운 부분!
+
+The second argument to useEffect is a read-only array that can contain any values — any[].
+useEffect의 두 번째 인수는 모든 값 (any [])을 포함 할 수있는 읽기 전용 배열입니다.
+
+Since useEffect takes a function as an argument and only returns a function or undefined, these types are already declared by the React type system:
+useEffect는 함수를 인수로 사용하고, 함수 또는 undefined 만을 반환하며, 이러한 types 는 React type system 에 정의되어 있습니다.
+```
+
+function useEffect(effect: EffectCallback, deps?: DependencyList): void;
+// The first argument, `effect`
+type EffectCallback = () => (void | (() => void | undefined));
+// The second argument, `deps?`
+type DependencyList = ReadonlyArray<any>;
+```
+useContext with TypeScript
+useContext allows you utilize the React context which is the global way to manage app state
+ which can be accessed inside any component without needing to pass the values as props.
+useContext를 사용하면 값을 props 로 전달하지 않고도 모든 컴포넌트에 접근할 수 있는 앱 상태를 관리하는 전역적인 방법인 React 컨텍스트를 활용할 수 있습니다.
+The useContext function accepts a Context object and returns the current context value.
+useContext 함수는 Context 객체를 받아들이고, 현재 context 값을 반환합니다.
+When the provider updates, this Hook will trigger a re-render with the latest context value.
+provider 가 업데이트 되면, 이 Hook 은 최신 context 값으로 다시 렌더링하게 합니다.
+
+```
+
+import { createContext, useContext } from 'react';
+props ITheme {
+  backgroundColor: string;
+  color: string;
+}
+// The standard way to create context. It takes an initial value object
+const ThemeContext = createContext<ITheme>({
+  backgroundColor: 'black',
+  color: 'white',
+})
+// Accessing context in a child component
+const themeContext = useContext<ITheme>(ThemeContext);
+```
+
+We initialize a context using the createContext function which builds a context object.
+컨텍스트 객체를 생성하는 createContext 함수를 사용하여 컨텍스트를 설정합니다.
+ The Context object contains a Provider component, and all components that want to access its context must be in the child tree of the Provider.
+컨택스트 객체에는 Provider component 가 포함되어 있으며 해당 컨텍스트에 액세스하려는 모든 component 는 Provider의 자식 트리에 있어야합니다.
+  If you have used Redux, this is equivalent to the <Provider store={store} /> component which provides access to the global store through context.
+  Redux를 사용한 경우, 이는 컨텍스트를 통해 global store 에 대한 액세스를 제공하는 <Provider store = {store} /> component 와 동일합니다.
+   For a further explanation of context, refer to the official docs.
+컨택스트에 대한 자세한 설명은 공식 문서를 참조하십시오.
+```
+function useContext<T>(context: Context<T>): T;
+
+interface Context<T> {
+  Provider: Provider<T>;
+  Consumer: Consumer<T>;
+  displayName?: string;
+}
+```
+useReducer with TypeScript
+For more complex state, you have the option to utilize the useReducer function as an alternative to useState.
+보다 복잡한 상태의 경우, useState의 대안으로 useReducer 함수를 사용할 수 있는 옵션이 있습니다.
+```
+
+const [state, dispatch] = useReducer(reducer, initialState, init);
+```
+If you have used Redux before, this should be familiar. 
+이전에 Redux를 사용해 본 적이 있다면 익숙할 것입니다.
+The useReducer accepts 3 arguments and returns a state and dispatch function.
+useReducer는 3개의 인수를 허용하고 상태 및 디스패치 함수를 리턴합니다.
+The reducer is a function of the form (state, action) => newState.
+reducer 는 (state, action) => newState 형태의 함수입니다.
+ The initialState is likely a JavaScript object, and the init argument is a function that allows you to lazy-load the initial state and will execute init(initialState).
+initialState는 JavaScript 객체일 가능성이 높으며 init 인수는 초기 상태를 laxy-load 하고 init(initialState)을 실행하는 함수입니다.
+
+This is a bit dense, so let’s look at a practical example.
+약간 복잡하므로 실제적인 예를 살펴보겠습니다.
+ We will redo the counter example from the useState section but replace it with a useReducer,
+ useState 섹션에서 카운터 예제를 다시 실행하지만 useReducer로 바꿉니다.
+  and then we’ll follow it with a Gist containing the type definitions.
+그런 다음 타입 정의가 포함 된 요점을 따라갑니다.
+```
+
+import * as React from 'react';
+
+enum ActionType {
+  Increment = 'increment',
+  Decrement = 'decrement',
+}
+
+interface IState {
+  count: number;
+}
+
+interface IAction {
+  type: ActionType;
+  payload: {
+    count: number; 
+  };
+}
+
+const initialState: IState = {count: 0};
+
+const reducer: React.Reducer<IState, IAction> = (state, action) => {
+  switch (action.type) {
+    case ActionType.Increment:
+      return {count: state.count + action.payload.count};
+    case ActionType.Decrement:
+      return {count: state.count - action.payload.count};
+    default:
+      throw new Error();
+  }
+}
+
+const ComplexState = () => {
+  const [state, dispatch] = React.useReducer<React.Reducer<IState, IAction>>(reducer, initialState);
+
+  return (
+    <div>
+      <div>Count: {state.count}</div>
+      <button onClick={
+        () => dispatch({type: ActionType.Increment, payload: { count: 1 } })
+      }>+</button>
+      <button onClick={
+        () => dispatch({type: ActionType.Decrement, payload: { count: 1 }})
+      }>-</button>
+    </div>  
+  );
+```
+The useReducer function can utilize the following types:
+useReducer function 은 다음 타입들을 사용할 수 있습니다.
+```
+
+type Dispatch<A> = (value: A) => void;
+type Reducer<S, A> = (prevState: S, action: A) => S;
+type ReducerState<R extends Reducer<any, any>> = R extends Reducer<infer S, any> ? S : never;
+type ReducerAction<R extends Reducer<any, any>> = R extends Reducer<any, infer A> ? A : never;
+
+function useReducer<R extends Reducer<any, any>, I>(
+  reducer: R,
+  initializerArg: I & ReducerState<R>,
+  initializer: (arg: I & ReducerState<R>) => ReducerState<R>
+): [ReducerState<R>, Dispatch<ReducerAction<R>>];
+
+function useReducer<R extends Reducer<any, any>, I>(
+  reducer: R,
+  initializerArg: I,
+  initializer: (arg: I) => ReducerState<R>
+): [ReducerState<R>, Dispatch<ReducerAction<R>>];
+
+function useReducer<R extends Reducer<any, any>>(
+  reducer: R,
+  initialState: ReducerState<R>,
+  initializer?: undefined
+): [ReducerState<R>, Dispatch<ReducerAction<R>>];
+```
+
+useCallback with TypeScript
+The useCallback hook returns a memoized callback. 
+useCallback hook 은 memoized callback 을 반환합니다.
+This hook function takes 2 arguments: the first argument is an inline callback function and the second argument is an array of values.
+이 hook function 에는 2개의 인수가 사용됩니다. 첫 번째 인수는 인라인 콜백 함수이고 두 번째 인수는 값의 배열입니다.
+The array of values will be referenced in the callback function and accessed by the order in which they exist in the array.
+값의 배열은 콜백 함수에서 참조되며 배열에 존재하는 순서대로 액세스됩니다.
+```
+
+const memoizedCallback = useCallback(
+  () => {
+    doSomething(a, b);
+  },
+  [a, b],
+);
+```
+useCallback will return a memoized version of the callback that only changes if one of the inputs in the input array has changed.
+ useCallback은 input 배열의 input 중 하나가 변경된 경우에만 변경되는 memoized version 의 콜백을 반환합니다.
+ This hook is utilized when you pass a callback function to a child component. 
+ 이 hook은 콜백 함수를 자식 component 에 전달할 때 사용됩니다.
+ It will prevent unnecessary renders because the callback will only be executed when the values change, allowing you to optimize your components.
+콜백은 값이 변경 될 때만 실행되어 component 를 최적화 할 수 있으므로 불필요한 렌더링을 방지 할 수 있습니다.
+  This hook can be viewed as a similar concept as the shouldComponentUpdate lifecycle method.
+  이 hook 은 shouldComponentUpdate 라이프 사이클 메소드와 유사한 개념으로 볼 수 있습니다.
+
+The TypeScript definition of useCallback is the following:
+useCallback 의 타입스크립트 정의는 다음과 같습니다.
+```
+function useCallback<T extends (...args: any[]) => any>(callback: T, deps: DependencyList): T;
+```
+useMemo with TypeScript
+The useMemo hook takes a “create” function as its first argument and an array of values as the second argument.
+useMemo hook 은 "create"함수를 첫 번째 인수로 사용하고 값의 배열을 두 번째 인수로 사용합니다.
+ It returns a memoized value which will only be recomputed if the input values change.
+ 입력 값이 변경된 경우에만 다시 계산되는 memoized value 를 반환합니다.
+  This allows you to prevent expensive calculations on renders for computed values.
+이를 통해 계산 된 값에 대한 렌더링에서 expensive calculations 을 방지 할 수 있습니다.
+```
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+```
+useMemo allows you to compute a value of any type. The below example shows how to create a typed memoized number.
+useMemo를 사용하면 모든 타입의 값을 계산할 수 있습니다. 아래 예제는 typed memoized number 를 생성하는 방법을 보여줍니다.
+```
+const computeExpensiveValue = (end: number) => {
+  let result = 0;
+
+  for (let i = 0; i < end * 1000000; i++) {
+    for (let j = 0; i < end * 1000; j++) {
+       result = result + i - j;
+    }
+  }
+
+  return result;
+};
+
+const MyComponent = ({ end = 0 }) => {
+  const memoizedNumber = React.useMemo<number>(computeExpensiveValue(end))
+    
+  return (
+    <DisplayResult result={memoizedNumber} />
+  );
+}
+```
+The TypeScript definition of useMemo is the following:
+useMemo 의 타입스크립트 정의는 다음과 같습니다.
+```
+
+function useMemo<T>(factory: () => T, deps: DependencyList): T;
+```
+The DependencyList is allowed to contain values of any type, and there is no strict requirement from the built-in types or in relation to T.
+DependencyList는 모든 타입의 값을 포함 할 수 있으며 내장 타입이나 T와 관련하여 엄격한 요구 사항이 없습니다.
