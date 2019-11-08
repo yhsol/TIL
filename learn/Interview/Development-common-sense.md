@@ -30,7 +30,11 @@
 
 ### 월드 와이드 웹(World Wide Web a.k.a WWW)과 같은 분산 하이퍼미디어 시스템을 위한 소프트웨어 아키텍처의 한 형식으로 자원을 정의하고 자원에 대한 주소를 지정하는 방법 전반에 대한 패턴
 
+    - https://www.edwith.org/boostcourse-web/lecture/16740/
     - REST란, REpresentational State Transfer 의 약자이다.
+    - api - application programmin interface
+    - 말 그대로, REST 형식의 API
+    - 핵심 컨텐츠 및 기능을 외부사이트에서 활용할 수 있도록 제공되는 인터페이스.
     - REST 6 가지 원칙
         Uniform Interface
         Stateless
