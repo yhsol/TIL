@@ -66,14 +66,27 @@
 ## 자료구조
 
 - Array vs LinkedList
-- Stack and Queue
-- Tree
+
+  - Array 는 순서 그대로 저장한다. 따라서 index 를 통해 해당 원소에 빠르게 접근 할 수 있다.
+    그렇지만 삭제, 삽입 시에는 이 순서에 균열이 생기기 때문에 그 균열을 다시 조정해야하는 비용이 발생한다.
+  - LinkedLisst 는 자료를 연결하는 지점을 만들어서 저장한다. 따라서 삭제와 삽입을 쉽게 할 수 있다.
+    하지만 해당 위치, 원소를 탐색하는 비용이 높다.
+
+- Stack and Queue (선형 구조)
+
+  - Stack 은 나중에 들어간게 먼저 나온다. 차곡차곡 쌓여서 가장 위에 있는 것이 출력됨.
+  - Queue 는 먼저 들어간게 먼저 나온다. 먼저 들어간게 가장 앞에 있다가 가장 먼저 출력됨.
+
+- Tree (비 선형 구조)
+  - 계층적 관계(Hierarchical Relationship)를 표현하는 자료구조.
+  - Node, Edge, Root Node, Terminal Node, Internal Node
   - Binary Tree
   - Full Binary Tree
   - Complete Binary Tree
   - BST(Binary Search Tree)
 - Binary Heap
-  --Black Tree - 정의 - 특징 - 삽입 - 삭제
+  - 자료구조를 효율적으로 관리하는 방법?
+  - Red Black Tree - 정의 - 특징 - 삽입 - 삭제
 - Hash Table
   - hash function
   - Resolve Collision
@@ -91,10 +104,32 @@
 ## 네트워크
 
 - GET, POST 방식의 차이점
-- T-handshake
+- TCP 3-way-handshake
 - TCP 와 UDP 의 차이점
 - HTTP 와 HTTPS 의 차이점
+
+  - HTTP 는 데이터를 주고 받기 위한 통신 프로토콜.
+    - 먼저 클라이언트에 접속 -> 클라이언트가 요청 -> 서버가 응답
+    - stateless 라서 한번 왔다갔다하면 연결이 끊겨서 불특정 다수를 향한 서비스에 적합.
   - HTTP 의 문제점들
+
+    - 보안
+      - 평문 통신 - 도청 가능
+      - 통신 상대 확인 하지 않음 - 위장 가능
+      - 완정성을 증명할 수 없음 - 변조 가능
+    - 해결 방법
+      - 통신 자체를 암호화
+        SSL(Secure Socket Layer) or TLs(Transport Layer Security) 라는 다른 프로토콜을 조합함으로써
+        HTTP 의 통신 내용을 암호화 할 수 있다. SSL 을 조합한 HTTP 를 HTTPS(HTTP Secure) or HTTP over SSL 이라고 한다.
+      - 콘텐츠를 암호화
+        HTTP 메시지에 포함되는 콘텐츠만 암호화. 암호화해서 전송하면 받는 측에서는 그 암호를 해독하여 출력하는 처리가 필요.
+
+  - HTTPS
+    HTTP 에 암호화와 인증, 그리고 완정성 보호를 더한 HTTPS
+    - HTTP 는 원래 TCP 와 직접 통신했지만, HTTPS 에서 HTTP 는 SSL 과 통신하고 SSL 이 TCP 와 통신 하게 된다. SSL 을 사용한 HTTPS 는 암호화와 증명서, 안전성 보호를 이용할 수 있게 된다.
+    - 모든 웹 페이지에서 HTTPS 를 사용하지 않는 이유
+      평문 통신에 비해서 암호화 통신은 CPU 나 메모리 등 리소스가 많이 필요하다. 그렇기 때문에 통신할 때마다 암호화를 하면 서버 한대당 처리할 수 있는 리퀘스트의 수가 줄어든다. 그렇기 때문에 민감한 정보를 다룰 때만 HTTPS 에 의한 암호화 통신을 사용한다.
+
 - DNS round robin 방식
 - 웹 통신의 큰 흐름
 
