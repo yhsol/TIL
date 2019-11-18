@@ -15,3 +15,14 @@
 
 - 자주 사용해야 하는 props 들이 있다면 styled.d.ts 과 같은 파일을 만들어서 사용할 props 들의 types 를 지정한 뒤,
   사용할 때 가져와서 사용하는 방법도 있겠다.
+- 다음과 같이 사용가능하다.
+
+```
+interface TitleProps {
+  readonly isActive: boolean;
+};
+
+const Title = styled.h1<TitleProps>`
+  color: ${props => props.isActive ? props.theme.colors.main : props.theme.colors.secondary};
+`
+```

@@ -8,7 +8,7 @@
   - "객체"라는 Box 에 복잡한 대상(함수, 변수 등)을 잘 정리해 두는 것.
   - 복잡한 것을 함수에 담아서 정리(function Do() { ...복잡 } -> Do() 로 단순화) -> 함수가 다시 복잡(Do1(), Do2(), Do3()) -> 이것을 다시 객체에 정리 -> toy = { Do1(), Do2(), Do3(), ... } -> toy.Do1(), toy.Do2(), toy.Do3()
   - 재사용성이 높아진다. 자주 사용되는 로직을 잘 정리해두면(라이브러리로 만드는 등의 방식으로) 계속 사용할 수 있으며 신뢰성을 확보할 수 있다.
-  - 따라서, 디버싱, 유지보수, 데이터 모델링시 객체와 매핑하는 것에 좋다.
+  - 따라서, 디버깅, 유지보수, 데이터 모델링시 객체와 매핑하는 것에 좋다.
   - 역할에 따라서 객체로 나눠서 정리하고, 각 객체에 더해서 가져야 할 특성을 상속을 통해 확장해 추가할 수 있다.
   - 문제
     - 객체가 상태를 갖게 됨.
@@ -34,11 +34,11 @@
 
 - RESTful API 란 무엇인가?
 
-  - API - application programmin interface
+  - API - application programming interface
     - 소프트웨어가 통신하는 interface
   - RESTful API - http 환경에서 api 를 작성하는 형식. 약속.
   - 리소스는 uri 로 표현하며, 리소스가 가리키는 것은 명사로 명시적으로, 분명하게 써야함.
-  - get, post, puth, patch, delete 등을 명확하게 써야함.
+  - get, post, put, patch, delete 등을 명확하게 써야함.
 
 - TDD 란 무엇이며 어떠한 장점이 있는가?
 
@@ -47,9 +47,10 @@
 
 - MVC 패턴이란 무엇인가?
 
-  ### web browser -> web server -> controller(servlet) -> model(with database, value object) -> cotroller -> view(jsp) -> controller -> seb serber -> web browser
+  ### web browser -> web server -> controller(servlet) -> model(with database, value object) -> cotroller -> view(jsp) -> controller -> web serber -> web browser
 
   - MVC 각 컴포넌트의 역할
+
     - CONTROLLER(컨트롤러)
       - 일종의 조정자
       - 클라이언트의 요청을 받았을 때, 그 요청에 대해 실제 업무를 수행하는 모델 컴포넌트를 호출.
@@ -62,28 +63,34 @@
       - DB에 연결하고, 데이터를 추출하거나 저장, 삭제, 업데이트, 변환 등의 작업 수행.
       - 상태의 변화가 있을 때 컨트롤러와 뷰에 통보해 후속 조치 명령을 받을 수 있게 한다.
     - VIEW(뷰)
+
       - 컨트롤러로부터 받은 모델의 결과값을 가지고 사용자에게 출력할 화면을 만드는 일을 한다.
       - 만들어진 화면을 웹브라우저에 전송하여 웹브라우저가 출력하게 하는 것이다.
       - 화면에 표시되는 부분으로 추출한 데이터나 일반적인 텍스트 데이터를 표시하거나
         입력폼 또는 사용자와의 상호작용을 위한 인터페이스를 표시하는 영역이다.
 
-- Git 과 GitHub 에 대해서
+    - 리액트에서라면 controller 는 app 또는 index 파일,
+      model 은 로직을 담당하는 container 파일,
+      view 는 presenter 라고 이해할 수도 있지 않을까.
+
+* Git 과 GitHub 에 대해서
+
   - Git 은 버전관리를 위한 소프트웨어
   - GitHub 는 Git 으로 저장돼서 원격전송된 내역들이 저장되는 공간을 제공하는 서비스.
 
 ## 자료구조
 
-- Array vs LinkedList
+- Array vs LinkedLlist
 
   - Array 는 순서 그대로 저장한다. 따라서 index 를 통해 해당 원소에 빠르게 접근 할 수 있다.
     그렇지만 삭제, 삽입 시에는 이 순서에 균열이 생기기 때문에 그 균열을 다시 조정해야하는 비용이 발생한다.
-  - LinkedLisst 는 자료를 연결하는 지점을 만들어서 저장한다. 따라서 삭제와 삽입을 쉽게 할 수 있다.
+  - LinkedList 는 자료를 연결하는 지점을 만들어서 저장한다. 따라서 삭제와 삽입을 쉽게 할 수 있다.
     하지만 해당 위치, 원소를 탐색하는 비용이 높다.
 
 - Stack and Queue (선형 구조)
 
-  - Stack 은 나중에 들어간게 먼저 나온다. 차곡차곡 쌓여서 가장 위에 있는 것이 출력됨.
-  - Queue 는 먼저 들어간게 먼저 나온다. 먼저 들어간게 가장 앞에 있다가 가장 먼저 출력됨.
+  - Stack 은 나중에 들어간게 먼저 나온다. 차곡차곡 쌓여서 가장 위에 있는 것이 출력됨. Last in First out
+  - Queue 는 먼저 들어간게 먼저 나온다. 먼저 들어간게 가장 앞에 있다가 가장 먼저 출력됨. First in First out
 
 - Tree (비 선형 구조)
   - 계층적 관계(Hierarchical Relationship)를 표현하는 자료구조.
@@ -149,7 +156,7 @@
       - 완정성을 증명할 수 없음 - 변조 가능
     - 해결 방법
       - 통신 자체를 암호화
-        SSL(Secure Socket Layer) or TLs(Transport Layer Security) 라는 다른 프로토콜을 조합함으로써
+        SSL(Secure Socket Layer) or TLS(Transport Layer Security) 라는 다른 프로토콜을 조합함으로써
         HTTP 의 통신 내용을 암호화 할 수 있다. SSL 을 조합한 HTTP 를 HTTPS(HTTP Secure) or HTTP over SSL 이라고 한다.
       - 콘텐츠를 암호화
         HTTP 메시지에 포함되는 콘텐츠만 암호화. 암호화해서 전송하면 받는 측에서는 그 암호를 해독하여 출력하는 처리가 필요.
@@ -234,3 +241,101 @@
 - Singleton
 
 ## 알고리즘
+
+## 프론트엔드
+
+- 브라우저의 동작 원리
+
+  - Browser
+
+    - 브라우저의 주요 기능은 사용자가 선택한 자원을 서버에 요청하고 브라우저에 표시하는 것이다. 자원은 보통 HTML 문서지만 PDF나 이미지 또는 다른 형태일 수 있다. 자원의 주소는 URI(Uniform Resource Identifier)에 의해 정해진다.
+
+  - 요약
+    HTML 마크업을 처리하고 DOM 트리를 빌드한다. ("무엇을" 그릴지 결정한다.)
+    CSS 마크업을 처리하고 CSSOM 트리를 빌드한다. ("어떻게" 그릴지 결정한다.)
+    DOM 및 CSSOM 을 결합하여 렌더링 트리를 형성한다. ("화면에 그려질 것만" 결정)
+    렌더링 트리에서 레이아웃을 실행하여 각 노드의 기하학적 형태를 계산한다. ("Box-Model" 을 생성한다.)
+    개별 노드를 화면에 페인트한다.(or 래스터화)
+
+  - 흐름
+
+    - html -> html parser -> dom tree
+    - css -> css parser -> 스타일 규칙
+    - 둘을 합해서 렌더 트리 구성.
+    - 그리기
+    - 표시
+
+  - DOM
+    "파싱 트리"는 DOM 요소와 속성 노드의 트리로서 출력 트리가 된다. DOM은 문서 객체 모델(Document Object Model)의 준말이다. 이것은 HTML 문서의 객체 표현이고 외부를 향하는 자바스크립트와 같은 HTML 요소의 연결 지점이다. 트리의 최상위 객체는 문서이다.
+
+- Document Object Model(작성중)
+  - Event bubbling and Capturing
+  - Event delegation
+- CORS
+  - 다른 도메인으로부터 리소스가 요청될 경우 해당 리소스는 cross-origin HTTP 요청 에 의해 요청된다. 하지만 대부분의 브라우저들은 보안 상의 이유로 스크립트에서의 cross-origin HTTP 요청을 제한한다. 이것을 Same-Origin-Policy(동일 근원 정책)이라고 한다. 요청을 보내기 위해서는 요청을 보내고자 하는 대상과 프로토콜도 같아야 하고, 포트도 같아야 함을 의미한다.(이 때, 서브 도메인 네임은 상관없다.)
+  - CORS는
+    타 도메인 간에 자원을 공유할 수 있게 해주는 것이다. Cross-Origin Resource Sharing 표준은 웹 브라우저가 사용하는 정보를 읽을 수 있도록 허가된 출처 집합을 서버에게 알려주도록 허용하는 특정 HTTP 헤더를 추가함으로써 동작한다.
+- 크로스 브라우징
+
+  - 웹 표준에 따라 개발을 하여 서로 다른 OS 또는 플랫폼에 대응하는 것을 말한다. 즉, 브라우저의 렌더링 엔진이 다른 경우에 인터넷이 이상없이 구현되도록 하는 기술이다.
+  - 공통요소로 웹 페이지를 제작하여 다른 환경에서도 동작하도록 하는 것.
+
+- 웹 성능과 관련된 Issues
+
+- client side rendering - server sider rendering
+
+  - client side rendering 은 client 에서 많은 일을 함.<br />
+    서버에서는 json 을 보내주는 역할을 하고, html 을 그리는 등의 역할을 클라이언트에서 담당하게 됨.<br/>
+    -> client 무거워짐.<br />
+    -> view 만 하자는 react 등장.
+
+  - CSR
+
+  - 필요한 부분만 읽으면 됨 -> 빠른 인터렉션.
+  - 일관성 있는 코드.
+  - 페이지를 읽는 시간, 자바스크립트를 읽는 시간,<br />
+    자바스크립트가 페이지를 그리는 시간이 다 필요.<br />
+    -> 초기 구동 속도 느려짐(그 이후에는 빠른 인터렉션)
+
+  - 문제
+    - 검색엔진 최적화 문제
+      - 웹 크롤러, 봇들이 자바스크립트를 못읽음.<br />
+        -> html 에서만 정보를 수집하게 되어 클라이언트 사이드 렌더링 되는 페이지를 빈 페이지로 인식.
+    - 보안 문제
+      - 쿠키말고는 사용자 정보를 저장할 공간 없음.
+        - ssr 에서는 서버측에서 세션등으로 관리.
+
+- SSR
+
+  - CSR 의 반대를 생각하면 쉽다.
+  - 컨텐츠를 처음 접하는 시점을 당길 수 있다.
+  - 서버따로, 클라이언트따로 작성하던 코드 통합 가능.
+  - SEO 도 OK
+
+  - 인터렉션 문제
+    - 매번 서버에 리퀘스트 요청을 통해야 하기 때문.
+    - DOM 조작에서도 요청 과정과 탐색 비용으로 애먹고 있다.
+    - REACT 가 많은 해결책을 제시했지만 두고 봐야함.
+
+* 정리
+  - CSR
+    - 빠른 인터렉션과 일관된 코드
+    - 자바스크립트를 읽는 시간이 필요해 초기 구동 느림.
+    - 웹 크롤러, 봇이 자바스크립트를 못읽어서 SEO 문제.
+    - 보안문제. 서버가 아닌 클라이언트에서 해야하고, 그러려면 쿠키로 해야함.
+  - SSR
+    - 서버가 많은 일.
+    - 컨텐츠 접하는 시점 당길 수 있음.
+    - 서버, 클라이언트 코드 통합.
+    - SEO -> OK
+    - 인터렉션 -> 매번 request 해야하고, DOM 조작에도 요청과정과 탐색비용이 듬.
+
+- CSS Methodology
+- normalize.css vs reset.css
+
+  - nomalize
+
+    - 브라우저간 일관된 스타일링을 목표로 한다.
+
+  - reset
+    - 기본 제공되는 브라우저 스타일을 전부 제거.
