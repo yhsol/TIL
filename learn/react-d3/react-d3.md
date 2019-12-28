@@ -48,7 +48,7 @@ https://codesandbox.io/s/react-d3-7d0yi?fontsize=14&hidenavigation=1&theme=dark
 스타일링은 styled-components 를 사용했다.
 css 파일로도 작동한다.
 
-그리고 최초 render 후 작업을 진행하기 위해 useEffect() 를 사용한다.
+그리고 최초 render 후, 즉 mount 후 작업을 진행하기 위해 useEffect() 를 사용한다.
 
 tip: useEffect 는 헷갈리기 쉬운 개념이다. 공식 문서와 함께 Dan Abramov 의 "A Complete Guide to useEffect" 가 많은 도움이 된다.(https://overreacted.io/a-complete-guide-to-useeffect/)
 
