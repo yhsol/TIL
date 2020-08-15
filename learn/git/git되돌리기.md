@@ -10,8 +10,14 @@
     - 커밋이력도 삭제.
 
   - hard
+
     - 이전으로 이동하고, 변경했던 내용도 삭제됨.
     - 커밋이력도 삭제.
+
+  - HEAD 로 이동
+
+    - undo last commit 은 HEAD 를 이용해서 git reset HEAD~1 과 같이 작동한다.
+    - soft 명령어와 비슷한듯.
 
 - revert
 
@@ -21,7 +27,8 @@
   - 아직은 좀 헷갈린다.
 
 - undo last commit on vs code
-  - git reset soft HEAD~1 인듯하다.
+  - git reset --soft HEAD~1 인듯하다.
+  - git reset HEAD~1 도 같은 동작을 한다.
   - 이전으로 이동하고, 커밋이력은 삭제됨.
 
 revert test
