@@ -4,16 +4,24 @@
 
   - soft
 
-    - undo last commit 이 이 명령어인듯.
-    - 그 전 헤드로 돌아가는데, 변경내용은 changes 에 남아있음.
-    - 삭제하고 싶으면 discard 가능하고 다시 반영도 가능.
+    - undo last commit 이 이 명령어 인듯.
+    - 이전으로 이동하고, 변경내용은 changes 상태에 남아있다.
+    - 그것을 discard 하거나 반영하거나 할 수 있다.
+    - 커밋이력도 삭제.
 
   - hard
-    - 그 전 헤드로 돌아가는데, 변경내용 삭제됨.
-    - discard 까지 이루어진 상태가 되는 것.
+    - 이전으로 이동하고, 변경했던 내용도 삭제됨.
+    - 커밋이력도 삭제.
 
 - revert
 
-- undo last commit on vs code
+  - 커밋이력 삭제하지 않음.
+  - conflict 발생할 수 있음.
+  - conflict 를 해결하고 다시 반영.
+  - 아직은 좀 헷갈린다.
 
-test
+- undo last commit on vs code
+  - git reset soft HEAD~1 인듯하다.
+  - 이전으로 이동하고, 커밋이력은 삭제됨.
+
+revert test
