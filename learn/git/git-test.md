@@ -2,3 +2,4 @@ test1
 test2
 test4
 fetch
+fetch head
