@@ -1,3 +1,0 @@
-- noteit 은 pwa 로 만들고, 그것을 활용해서 medium clone(large) 프로젝트를 하자.
-- server 는 graphQl, frontend 는 React 를 쓴다.
-- noteit 은 javascript 로, large 는 typescript 를 쓴다.
