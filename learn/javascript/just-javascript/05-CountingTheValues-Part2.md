@@ -96,3 +96,5 @@ console.log(typeof alohomora); // "symbol"
 It's hard to explain their purpose and behavior without diving deeper into objects and properties, so for now we're going to skip them. Sorry, symbols!
 
 ![Symbols comming soon](https://ci5.googleusercontent.com/proxy/z4Tv8hWnbgdm8IAdrbhU4F7BP_AXzPmoobjwH4Ifjqj5kA_sog_YH9PtTrBmmtm1NOSLHHhxJooH4HFCzI7DCuo6mEGt1lOWqaHLR71CZMtsykt3D5jC5s41RBGi_E3YCmxG9613LT0jJGedVIltPuh8Xi-yxYhDFtYeRWbGHkbP7rgzNA=s0-d-e1-ft#https://res.cloudinary.com/dg3gyk0gu/image/upload/v1580435620/just-javascript-email-images/jj04/sym-comingsoon.png)
+
+test
