@@ -64,6 +64,35 @@ This doesn't mean that strings are objects! String properties are special and do
 
 **In our universe, there is a distinct value for every conceivable string.** Yes, this includes your grandmother's maiden name, the fanfic you published ten years ago under an alias, and the script of Matrix 5 which hasn't been written yet.
 
-Of course, all possible strings can't literally fit inside a computer memory chip. But _the idea_ of every possible string can fit inside your head. Our JavaScript universe is a model for humnas, not for computers!
+Of course, all possible strings can't literally fit inside a computer memory chip. But _the idea_ of every possible string can fit inside your head. Our JavaScript universe is a model for humans, not for computers!
 
 This might prompt a quistion. Does this code create a string?
+
+```js
+// Try it in your console
+let answer = promt("Enter your name");
+console.log(answer); // ?
+```
+
+Or does it merely _summon_ a string that already exists in our universe?
+
+The answer to this question depends on whether we're studying JavaScript "from the outside" or "from the insed"
+
+_Outside_ our mental model, the answer depends on a specific implementation. Whether a string is represented as a single block of memory, multiple blocks, or a rope, is up to the JavaScript engien.
+
+But _inside_ our mental model, this quesion doesn't mean anything. We can't set up an experiment to say whether strings "get created" or "get summoned" withing our JavaScript universe.
+
+To keep our mental model simple, we will say that **all conceivable string values already exist from the beginning - one value for every distinct string.**
+
+## Symbols
+
+Symbols are a relatively recent addition to the language.
+
+```js
+let alohomora = Symbol();
+console.log(typeof alohomora); // "symbol"
+```
+
+It's hard to explain their purpose and behavior without diving deeper into objects and properties, so for now we're going to skip them. Sorry, symbols!
+
+![Symbols comming soon](https://ci5.googleusercontent.com/proxy/z4Tv8hWnbgdm8IAdrbhU4F7BP_AXzPmoobjwH4Ifjqj5kA_sog_YH9PtTrBmmtm1NOSLHHhxJooH4HFCzI7DCuo6mEGt1lOWqaHLR71CZMtsykt3D5jC5s41RBGi_E3YCmxG9613LT0jJGedVIltPuh8Xi-yxYhDFtYeRWbGHkbP7rgzNA=s0-d-e1-ft#https://res.cloudinary.com/dg3gyk0gu/image/upload/v1580435620/just-javascript-email-images/jj04/sym-comingsoon.png)
