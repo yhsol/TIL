@@ -270,3 +270,26 @@ Note that neither the `let` declaration nor the = assignment have anything to do
 In fact, `countDwarves()` is also an expression. It's called a _Call expression_. To "answer" a call expression, JavaScript runs the code inside our function, and hands us the returned value as the result (in this expample, it's 7).
 
 We'll look at function calls in more detail in the future modules.
+
+## Recap
+
+That was quite a journey! Over the last two modules, we have looked at every value type in JavaScript. Let's join Count von Count in recapping how many values there are of each type, starting with the different primitive types:
+
+![Primitive Values](https://ci5.googleusercontent.com/proxy/OpDF_n4IzMZMGG0gj1xtL8ycGfBB3PfOhJE7INCJ6wcA3hvhdoAml4O8Bx2kact7Po--V9xj6-w3A6ZSFyqWhPAz3EgQCtY0v1VpLjxlMxZsnqWzMyDFpMM8u3x97b-acJ1B4cd3gu0k64dqIaOZ7UsOyggnepzMG4P6G-nZcJqi3-oX3hDe=s0-d-e1-ft#https://res.cloudinary.com/dg3gyk0gu/image/upload/v1581383593/just-javascript-email-images/jj05/primitives-pt2-2.png)
+
+- **Undefined**: Only one value, `undefined`.
+- **Null**: ONly one value, `null`.
+- **Booleans**: Two values: `true` and `false`.
+- **Numbers**: One value for each floating point math number.
+- **BigInts**: One value for every conceivable integer.
+- **Strings**: One value for every concevible string.
+- **Symbols**: We skipped Symbols for now, but we'll get tot them someday!
+
+The types below are special because they let us _make our own values_:
+
+![Non Primitive Values](https://ci6.googleusercontent.com/proxy/ZDaTj94_bDsNc5k1DAlMZkvTGsBmPaQPgMbhAzuRS5mjQKxQ4HkZzDdTdcOJ5Ctr_cRNBpKVMP2oKpH-x1vUxUiVcL6lYl8vLstxfdX8N2ud-tC8RXoC9Q_zRoxn4o1R8ApfmN01RY_PHbXRhe002iH1TCBevXzsG6v_6xOMg8M=s0-d-e1-ft#https://res.cloudinary.com/dg3gyk0gu/image/upload/v1580435620/just-javascript-email-images/jj04/summary-2.png)
+
+- **Objects**: One value for every object literal we execute.
+- **Function**: One value for every function expression we execute.
+
+It was fun to visit the different "celestial spheres" of JavaScript. Now that we've counted all the values, we've also learned what makes them _distinct_ from one another. \__For example, writing `2` or `"hello"` always "summons" the same number or a string value. But writing `{}` or `function() {}` always \_creates_ a brand new, different value. This idea is crucial to understanding equality in JavaScript, which will be the topic of the next module.
