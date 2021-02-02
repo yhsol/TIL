@@ -224,3 +224,42 @@ Eventually, you will either arrive at the answer or run out of people to ask!
 
 This sequence of objects to "visit" is known as our object's _prototype chain_.
 (However, unlike a chain you might wear, prototype chains can't be circular!)
+
+## Shadowing
+
+Consider this slightly modified example:
+
+```js
+let human = {
+  teeth: 32,
+};
+
+let gwen = {
+  __proto__: human,
+  // This object has its own teeth property:
+  teeth: 31,
+};
+```
+
+Both objects define a property called `teeth`, so the results are different:
+
+```js
+console.log(human.teeth); // 32
+console.log(human.teeth); // 31
+```
+
+Note that `gwen.teeth` is `31`. If `gwen` didn't have its own `teeth` property, we would look at the prototype.
+But because the object that `gwen` points at has its _own_ `teeth` property, we don't need to keep searching for the answer.
+
+![`gwen` object has `teeth` property and prototype](https://ci5.googleusercontent.com/proxy/PRI98JsChgQpslyVPZkXzRUXbnW41XNORYikT_wW_phQXuthkdAQm-2A-R1O9LV3qZqxG52tEHMiG38lgSSbtamTHVYoV5J2MMzdbjnb0boNsJhKmT03b9CVQSZM87ky4a8uOKT6pHZdbDH9jUs_ijerrxEyzONX_0nLtvccFXU=s0-d-e1-ft#https://res.cloudinary.com/dg3gyk0gu/image/upload/v1590534072/just-javascript-email-images/jj09/shadowing.png)
+
+In other words, once we find our property, **we stop the search.**
+
+If you ever want to check if an object has its _own_ property wire with a certain name, you can call a build-in function called `hasOwnProperty`.
+It returns `true` for "own" properties, and does not look at the prototypes.
+In our last example, both objects have their own `teeth` wires,so it is `true` for both:
+
+```js
+console.log(human.hasOwnProperty("teeth")); // true
+console.log(gwen.hasOwnProperty("teeth")); // true
+```
