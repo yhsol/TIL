@@ -237,3 +237,60 @@ Rust warns that you haven’t used the Result value returned from read_line, ind
 The right way to suppress the warning is to actually write error handling, but because you just want to crash this program when a problem occurs, you can use expect. You’ll learn about recovering from errors in Chapter 9.
 
 ### Printing Values with `println!` Placeholders
+
+Aside from the closing curly bracket,
+there's only one more line to discuss in the code added so far,
+which is the following:
+
+```rs
+    println!("You guessed: {}", guess);
+```
+
+This line prints the string we saved the user's input in.
+The set of curly brackets, `{}`, is a placeholder:
+think of `{}` as little crab pincers that hold a value in place.
+You can print more than one value using curly brackets:
+the first set of curly brackets hold the first value listed after the format string,
+the second set hold the second value, and so on.
+Printing multiple values in one call to `println!` would look like this:
+
+```rs
+let x = 5;
+let y = 10;
+
+println!("x = {} and y = {}", x, y);
+```
+
+This code would print `x = 5 and y = 10`.
+
+## Testing the First Part
+
+Let's test the first part of the guessing game.
+Run it using `cargo run`:
+
+```
+$ cargo run
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished dev [unoptimized + debuginfo] target(s) in 6.44s
+     Running `target/debug/guessing_game`
+Guess the number!
+Please input your guess.
+6
+You guessed: 6
+```
+
+At this point,
+the first part of the game is done:
+we're getting input from the keyboard and then printing it.
+
+## Generating a Secret Number
+
+Next, we need to generate a secret number that the user will try to guess.
+The secret number should be different every time so the game is fun to play more than once.
+Let's use a random number between 1 and 100 so the game isn't too difficult.
+Rust doesn't yet include random number functionality in its standard library.
+However, the Rust team does provide a `rand` crate.
+
+### Using a Crate to Get More Functionality
+
+Remember that a crate is a collection of Rust source code files.
