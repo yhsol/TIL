@@ -280,3 +280,81 @@ You guessed: 6
 At this point, the first part of the game is done: we're getting input from the keyboard and then printing it.
 
 ### Genereating a Secret Number
+
+Next, we need to genereate a secret number that the user will try to guess.
+The secret number should be different every time so the game is fun to play more than once.
+Let's use a random number between 1 and 100 so the game isn't too difficult.
+Rust doesn't yet include random number functionlity in its standard library.
+However, the Rust team does provide a `rand` crate.
+
+#### Using a Crate to Get More Functionality
+
+Remember that crate is a collection of Rust source code files.
+The project we've been building is a _binary crate_, which is an executable.
+The `rand` crate is a _library crate_, which contanins code intended to be used in other programs.
+
+Cargo's use of external crates is where it really shines.
+Before we can write code that uses `rand`, we need to modify the _Cargo.toml_ file to include the `rand` crate as dependency.
+Open that file now and add the following line to the bottom beneath the `[dependencies]` section header that Cargo created for you:
+
+Filename: Cargo.toml
+
+```toml
+[dependencies]
+rand = "0.5.5"
+```
+
+In the _Cargo.toml_ file,
+everything that follows a header is part of a section that continues until another section starts.
+The `[dependencies]` section is where you tell Cargo which external crates your project depends on and which versions of those crates you require.
+In this case, we'll specify the `rand` crate with the semantic version specifier `0.5.5`.
+Cargo understands Semantic Versioning (sometimes called _SemVer_), which is a standard for writing version numbers.
+The number `0.5.5` is actually shorthand for `^0.5.5`, which means any version that is at least `0.5.5` but below `0.6.0`.
+Cargo considers these versions to have public APIs compatible with version `0.5.5`.
+
+Now, without changing any of the code,
+let's build the project, as shown in Listing 2-2.
+
+```
+$ cargo build
+    Updating crates.io index
+  Downloaded rand v0.5.5
+  Downloaded libc v0.2.62
+  Downloaded rand_core v0.2.2
+  Downloaded rand_core v0.3.1
+  Downloaded rand_core v0.4.2
+   Compiling rand_core v0.4.2
+   Compiling libc v0.2.62
+   Compiling rand_core v0.3.1
+   Compiling rand_core v0.2.2
+   Compiling rand v0.5.5
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished dev [unoptimized + debuginfo] target(s) in 2.53s
+```
+
+Listing 2-2: The output from running `cargo build` after adding the rand crate as a dependency
+
+You may see different version numbers (but the will all be compatible with the code, thanks to SemVer!),
+different lines (depending on the operating system),
+and the lines may be in a different order.
+
+Now that we have an external dependency, Cargo fetches the latest versions of everything from the _registry_, which is a copy of data from Crates.io. Crates.io is where people in the Rust ecosystem post their open source Rust projects for others to use.
+
+After updating the registry, Cargo checks the `[dependencies]` section and downloads any crates you don’t have yet. In this case, although we only listed `rand` as a dependency, Cargo also grabbed `libc` and `rand_core`, because `rand` depends on those to work. After downloading the crates, Rust compiles them and then compiles the project with the dependencies available.
+
+If you immediately run `cargo build` again without making any changes, you won’t get any output aside from the `Finished` line. Cargo knows it has already downloaded and compiled the dependencies, and you haven’t changed anything about them in your _Cargo.toml_ file. Cargo also knows that you haven’t changed anything about your code, so it doesn’t recompile that either. With nothing to do, it simply exits.
+
+If you open up the _src/main.rs_ file, make a trivial change, and then save it and build again, you'll only see two lines of output:
+
+```
+$ cargo build
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished dev [unoptimized + debuginfo] target(s) in 2.53 secs
+```
+
+These lines show Cargo only updates the build with your tiny change to the _src/main.rs_ file.
+Your dependencies haven't changed,
+so Cargo knows it can reuse what it has already downloaded and compiled for those.
+It just rebuilds your part of the code.
+
+#### Ensuring Reproducible Builds with the _Cargo.lock_ File
