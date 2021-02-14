@@ -238,18 +238,33 @@ The right way to suppress the warning is to actually write error handling, but b
 
 ### Printing Values with `println!` Placeholders
 
+<<<<<<< HEAD
 Aside from the closing curly bracket, there's only one more line to discuss in the code added so far, which is the following:
+=======
+Aside from the closing curly bracket,
+there's only one more line to discuss in the code added so far,
+which is the following:
+>>>>>>> a96dcbd5e84c14702f532cf170d03a31864793e7
 
 ```rs
     println!("You guessed: {}", guess);
 ```
 
+<<<<<<< HEAD
 This line prints the string we saved the uses's input in.
 The set of curly brackets, `{}`, is a placeholder:
 think of `{}` as littel crab pincers that hold a value in place.
 You can print more than one value using curly brackets:
 the first set of curly brackets holds the first value listed after the format string,
 the second set holds the second value, and so on.
+=======
+This line prints the string we saved the user's input in.
+The set of curly brackets, `{}`, is a placeholder:
+think of `{}` as little crab pincers that hold a value in place.
+You can print more than one value using curly brackets:
+the first set of curly brackets hold the first value listed after the format string,
+the second set hold the second value, and so on.
+>>>>>>> a96dcbd5e84c14702f532cf170d03a31864793e7
 Printing multiple values in one call to `println!` would look like this:
 
 ```rs
@@ -261,7 +276,11 @@ println!("x = {} and y = {}", x, y);
 
 This code would print `x = 5 and y = 10`.
 
+<<<<<<< HEAD
 ### Testing the First Part
+=======
+## Testing the First Part
+>>>>>>> a96dcbd5e84c14702f532cf170d03a31864793e7
 
 Let's test the first part of the guessing game.
 Run it using `cargo run`:
@@ -277,6 +296,7 @@ Please input your guess.
 You guessed: 6
 ```
 
+<<<<<<< HEAD
 At this point, the first part of the game is done: we're getting input from the keyboard and then printing it.
 
 ### Genereating a Secret Number
@@ -358,3 +378,20 @@ so Cargo knows it can reuse what it has already downloaded and compiled for thos
 It just rebuilds your part of the code.
 
 #### Ensuring Reproducible Builds with the _Cargo.lock_ File
+=======
+At this point,
+the first part of the game is done:
+we're getting input from the keyboard and then printing it.
+
+## Generating a Secret Number
+
+Next, we need to generate a secret number that the user will try to guess.
+The secret number should be different every time so the game is fun to play more than once.
+Let's use a random number between 1 and 100 so the game isn't too difficult.
+Rust doesn't yet include random number functionality in its standard library.
+However, the Rust team does provide a `rand` crate.
+
+### Using a Crate to Get More Functionality
+
+Remember that a crate is a collection of Rust source code files.
+>>>>>>> a96dcbd5e84c14702f532cf170d03a31864793e7
