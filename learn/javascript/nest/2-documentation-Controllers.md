@@ -111,3 +111,46 @@ export class CatsController {
 
 **HINT**
 In order to take advantage of express typings (as in the request: Request parameter example above), install @types/express package.
+
+The request object represents the HTTP request and has
+properties for the request query string, parameters,
+HTTP headers, and body (read more here).
+In most cases, it's not necessary to grab these properties manually.
+We can use dedicated decorators instead,
+sucah as `@Body()` or `@Query()`,
+which are available out of the box.
+Below is a list of the provided decorators and the plain platform-specific objects they represent.
+
+|`@Request(), @Req()`|`req`|
+|`@Response(), @Res()`|`res`|
+|`@Next()`|`next`|
+|`@Session()`|`req.session`|
+|`@Param(key?: string)`|`req.params` / `req.params[key]`|
+|`@Body(key?: string)`|`req.body` / `req.body[key]`|
+|`@Query(key?: string)`|`req.query` / `req.query[key]`|
+|`@Headers(name?: string)`|`req.headers` / `req.headers[name]`|
+|`@Ip()`|`req.ip`|
+|`@HostParam()`|`req.hosts`|
+
+For compatibility with typings across underlying HTTP platforms
+(e.g., Express and Fastify),
+Nest provides `@Res()` and `@Response()` decorators.
+`@Res()` is simply an alias for `@Response()`.
+Both directly expose the underlying native platform `response` object interface.
+When using them,
+you should also import the typings for the underlying library
+(e.g., `@types/express`) to take full advantage.
+Note that when you inject either `@Res()` or `@Response()` in a method handler,
+you put Nest into **Library-specific mode** for that handler, and you become responsible for managing the response.
+When doing so, you must issue some kind of response by making a call on the `response` object
+(e.g., `res.json(...)` or `res.send(...)`),
+or the HTTP server will hang.
+
+**HINT**
+To learn how to create you own custom decorators, visit **this** chapter.
+
+### Resources
+
+Earlier, we defined an endpoint to fetch the cats resource (**GET** route).
+We'll typically also want to provide an endpoint that creates new records.
+For this, let's create the **POST** handler:
