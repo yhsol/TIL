@@ -154,3 +154,155 @@ To learn how to create you own custom decorators, visit **this** chapter.
 Earlier, we defined an endpoint to fetch the cats resource (**GET** route).
 We'll typically also want to provide an endpoint that creates new records.
 For this, let's create the **POST** handler:
+
+```ts
+import { Controller, Get, Post } from "@netsjs/common";
+
+@Controller("cats")
+export class CatsController {
+  @Post()
+  create(): string {
+    return "This action adds a new cat";
+  }
+
+  @Get()
+  findAll(): string {
+    return "This action returns all cats";
+  }
+}
+```
+
+It's that simple.
+Nest provides decorators for all of the standard HTTP mehotds:
+`@Get()`, `@Post()`, `@Put()`, `@Delete()`, `@Patch()`, `@Options()`,
+and `@Head()`.
+In addition, `@All()` defines an endpoint that handlers all of them.
+
+### Route wildcards
+
+Pattern based routes are supported as well.
+For instance, the asterisk is used as a wildcard,
+and will match any combination of characters.
+
+```ts
+@Get('ab*cd')
+findAll() {
+  return 'This route uses a wildcard';
+}
+```
+
+The `'ab*cd'` route path will match `abcd`, `ab_cd`, `abecd`,
+and so on.
+The characters `?`, `+`, `*`,
+and `()` may be used in a route path,
+and are subsets of their regular expression counterparts.
+The hyphen (`-`) and the dot (`.`) are interpreted literally by string-based paths.
+
+### Status code
+
+As mentioned,
+the response **status code** is always **200** by default,
+except for POST requests which are **201**.
+We can easily change this behavior by adding the `@HttpCode(...)` decorator at a handler level.
+
+```ts
+@Post()
+@HttpCode(204)
+create() {
+  return 'This action adds a new cat';
+}
+```
+
+**HINT**
+import `HttpCode` from the `@nestjs/common` package.
+
+Often, your status code isn't static but depends on various factors,
+In that case, you can use a library-specific **response**(inject using `@Res()`) object(or, in case of an error, throw an exception).
+
+### Headers
+
+To sepcify a custom response header,
+you can either use a `@Header()` decorator or a library-specific response object (and call `res.header()` directly).
+
+```ts
+@Post()
+@Header('Cache-Control', 'none')
+create() {
+  return 'This action adds a new cat';
+}
+```
+
+**HINT**
+import `Header` from the `@nestjs/common` package.
+
+### Redirection
+
+To redirect a response to a specific URL,
+you can either use a `@Redirect()` decorator or a library-specific response object (and call `res.redirect()` directly).
+
+`Redirect()` takes two arguments,
+`url` and `statusCode`,
+both are optional.
+The default value of `statusCode` is `302` (`Found`) if omitted.
+
+```ts
+@Get()
+@Redirect('https://nestjs.com', 301)
+```
+
+Sometimes you may want to determine the HTTP status code or
+the redirect URL dynamically.
+Do this by returning an object
+from the route handler method with the shape:
+
+```ts
+{
+  "url": string,
+  "statusCode": number
+}
+```
+
+Returned values will override any arguments passed to the `@Redirec()` decorator.
+For example:
+
+```ts
+@Get('docs')
+@Redirect('https://docs.nestjs.com', 302)
+getDocs(@Query('version') version) {
+  if (version && version === '5') {
+    return {url: 'https://docs.nestjs.com/v5/'};
+  }
+}
+```
+
+### Route parameters
+
+Routes with static paths won't work when you need to accept **dynamic data** as part of the request
+(e.g. `GET/cats/1` to get cat with id `1`).
+In order to define routes with parameters,
+we can add route parameter **tokens** in the path of the route to capture the dynamic value at that position in the request URL.
+The route parameter token in the `@Get()` decorator example below demonstrates this usage.
+Route parameters declared in this way can be accessed using the `@Param()` decorator,
+which should be added to the method signature.
+
+```ts
+@Get(':id')
+findOne(@Param() params); string {
+  console.log(params.id)
+  return `This action returns a #${params.id} cat`;
+}
+```
+
+`@Param()` is used to decorate a method parameter (`params` in the example above), and makes the **route** parameters available as properties of that decorated method paramereter inside the body of the method. As seen in the code above, we can access the `id` parameter by referencing `params.id`.
+You can also pass in a particular parameter token to the decorator,
+and then reference the route parameter directly by name in the method body.
+
+**HINT**
+import `Param` from the `@nestjs/common` package.
+
+```ts
+@Get(':id')
+findOne(@Param('id') id: string): string {
+  return `This action returns a #${id} cat`;
+}
+```
