@@ -306,3 +306,38 @@ findOne(@Param('id') id: string): string {
   return `This action returns a #${id} cat`;
 }
 ```
+
+### Sub-Domain Routing
+
+The `@Controller` decorator can take a `host` option to require that the HTTP host of the incoming requests matches some specific value.
+
+```ts
+@Controller({ host: "admin.example.com" })
+export class AdminController {
+  @Get()
+  index(): string {
+    return "Admin page";
+  }
+}
+```
+
+**WARNING**
+Since Fastify lacks support for nested routers,
+when using sub-domain routing,
+the (default) Express adapter should used instead.
+
+Similar to a route `path`, the `hosts` option can use tokens to capture the dynamic valud at that position in the host name.
+The host parameter token in the `@Controller()` decorator example beolow demonstrates this usage.
+Host parameters declared in this way can be accessed using the `@HostParam()` deocrator, which should be added to the method signature.
+
+```ts
+@Controller({ host: ":acount.example.com" })
+export class AccountController {
+  @Get()
+  getInfo(@HostParam("account") account: string) {
+    return account;
+  }
+}
+```
+
+### Scopes
