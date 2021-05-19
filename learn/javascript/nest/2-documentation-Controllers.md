@@ -306,3 +306,147 @@ findOne(@Param('id') id: string): string {
   return `This action returns a #${id} cat`;
 }
 ```
+
+### Sub-Domain Routing
+
+The `@Controller` decorator can take a `host` option to require that the HTTP host of the incoming requests matches some specific value.
+
+```ts
+@Controller({ host: "admin.example.com" })
+export class AdminController {
+  @Get()
+  index(): string {
+    return "Admin page";
+  }
+}
+```
+
+**WARNING**
+Since Fastify lacks support for nested routers,
+when using sub-domain routing,
+the (default) Express adapter should used instead.
+
+Similar to a route `path`, the `hosts` option can use tokens to capture the dynamic valud at that position in the host name.
+The host parameter token in the `@Controller()` decorator example beolow demonstrates this usage.
+Host parameters declared in this way can be accessed using the `@HostParam()` deocrator, which should be added to the method signature.
+
+```ts
+@Controller({ host: ":acount.example.com" })
+export class AccountController {
+  @Get()
+  getInfo(@HostParam("account") account: string) {
+    return account;
+  }
+}
+```
+
+### Scopes
+
+- almost everything is shared across incoming requests.
+- connection pool to the database, singleton services with global state, etc.
+- Node.js doesn't follow the request/response Multi-Threaded Stateless Model in which every request is processed by a separate thread.
+  Hence, using singleton instances is fully safe for our applications.
+- However, there are edge-cases when request-based lifetime of the controller may be the desired behavior,
+  for instance pre-request caching in GraphQL applications,
+  request tracking or multi-tenancy.
+- Leanr how to control scopes [here](https://docs.nestjs.com/fundamentals/injection-scopes).
+
+### Asynchronicity
+
+- modern JavaScript, data extraction is mostly **asyncronous**.
+- That's why Nest supports and works well with `async` functions.
+
+---
+
+**HINT**
+Learn more about `async / await` feature [here](https://kamilmysliwiec.com/typescript-2-1-introduction-async-await)
+
+---
+
+- Every async function has to return a `Promise`.
+  This means that you can return a deferred value that Nest will be able to resolve by itself.
+
+```ts
+@Get()
+async findAll(): Promise<any[]> {
+  return [];
+}
+```
+
+- The above code is fully valid.
+- Furthermore, Nest route handlers are even more powerful by being able to return RxJS observable streams.
+- Nest will automatically subscribe to the source underneath and take the last emitted value (once the stream is completed).
+
+```ts
+@Get()
+findAll(): Observable<any[]> {
+  return of([]);
+}
+```
+
+- Both of the above approaches work and you can use whatever fits your requirements.
+
+### Request payloads
+
+Our previous example of the POST route handler didn't accept any client params.
+Let's fix this by adding the `@Body()` decorator here.
+
+- we need to determine the DTO (Data Transfer Object) schema.
+- A DTO is an object that defines how the data will be sent over the network.
+- We could determine the DTO schema by using TypeScript interfaces,
+  or by simple classes.
+- Interestingly, we recommented using **classes** here.
+- Classes are part of the JavaScript ES^ standard, and therefore they are preserved as real entities in the compiled JavaScript.
+- On the other hand, since TypeScript interfaces are removed during the transpilation, Nest can't refer to them at runtime.
+- This is important because features such as Pipes enable additional possibilities when they have access to the metatype of the variable at runtime.
+
+- `CreateCatDto` calss:
+
+Filename: create-cat.dto.ts
+
+```ts
+export class CreateCatDto {
+  name: string;
+  age: number;
+  breed: string;
+}
+```
+
+It has only three basic properties. Thereafter we can use the newly created DTO inside the `CatsController`:
+
+cats.controller.ts
+
+```ts
+@Post()
+async create(@Body() createCatDto: CreateCatDto) {
+  return 'This action adds a new cat';
+}
+```
+
+### Handling errors
+
+- https://docs.nestjs.com/exception-filters
+
+### Full resource sample
+
+### Getting up and running
+
+Nest still doesn't know that `CatsController` exists and as a result won't create an instance of this class.
+
+- Controllers always belong to a module,
+  which is why we include the `controllers` array within the `@Modeul()` decorator.
+  Since we haven't yet defined any other modules except the root `AppModule`,
+  we'll use that to introduce the `CatsController`:
+  Filename: app.module.ts
+
+```ts
+import { Module } from "@nestjs/common";
+import { CatsController } from "./cats/cats.controller";
+
+@Module({
+  controllers: [CatsController],
+})
+export class AppModule {}
+```
+
+### Library-specific approach
