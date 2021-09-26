@@ -1,0 +1,19 @@
+{
+  "name": "refactoring2edition",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "typescript": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.2",
+    "@types/mocha": "^9.0.0",
+    "mocha": "^9.1.1"
+  },
+  "scripts": {
+    "test": "mocha -r ts-node/register ./**/*.test.ts"
+  },
+  "author": "",
+  "license": "ISC"
+}
