@@ -9,9 +9,24 @@ export function sampleProvinceData() {
   return {
     name: "Asia",
     producers: [
-      { name: "Byzantium", cost: 10, production: 9 },
-      { name: "Attalia", cost: 12, production: 10 },
-      { name: "Sinope", cost: 10, production: 6 },
+      {
+        name: "Byzantium",
+        cost: 10,
+        production: 9,
+        province: { totalProduction: 0 },
+      },
+      {
+        name: "Attalia",
+        cost: 12,
+        production: 10,
+        province: { totalProduction: 0 },
+      },
+      {
+        name: "Sinope",
+        cost: 10,
+        production: 6,
+        province: { totalProduction: 0 },
+      },
     ],
     demand: 30,
     price: 20,
@@ -19,48 +34,48 @@ export function sampleProvinceData() {
 }
 
 export class Province {
-  _name: string;
-  _producers: Producer[];
-  _totalproduction: number;
-  _demand: number;
-  _price: number;
+  name: string;
+  producers: Partial<Producer>[];
+  totalProduction: number;
+  demand: number;
+  price: number;
 
-  constructor(doc: Doc) {
-    this._name = doc.name;
-    this._producers = [];
-    this._totalproduction = 0;
-    this._demand = doc.demand;
-    this._price = doc.price;
+  constructor(doc) {
+    this.name = doc.name;
+    this.producers = [];
+    this.totalProduction = 0;
+    this.demand = doc.demand;
+    this.price = doc.price;
     doc.producers.forEach((d) => this.addProducer(new Producer(this, d)));
   }
 
-  get name() {
-    return this._name;
+  get getName() {
+    return this.name;
   }
-  get producers() {
-    return this._producers.slice();
+  get getProducers() {
+    return this.producers.slice();
   }
-  get totalProduction() {
-    return this._totalproduction;
+  get getTotalProduction() {
+    return this.totalProduction;
   }
-  set totalProduction(arg) {
-    this._totalproduction = arg;
+  set setTotalProduction(arg) {
+    this.totalProduction = arg;
   }
-  get demand() {
-    return this._demand;
+  get getDemand() {
+    return this.demand;
   }
-  set demand(arg) {
-    this._demand = parseInt(`${arg}`);
+  set setDemand(arg) {
+    this.demand = parseInt(`${arg}`);
   }
-  get price() {
-    return this._price;
+  get getPrice() {
+    return this.price;
   }
-  set price(arg) {
-    this._price = parseInt(`${arg}`);
+  set setPrice(arg) {
+    this.price = parseInt(`${arg}`);
   }
 
   get shortfall() {
-    return this._demand - this.totalProduction;
+    return this.demand - this.totalProduction;
   }
 
   get profit() {
@@ -71,7 +86,7 @@ export class Province {
     return this.satisfiedDemand * this.price;
   }
   get satisfiedDemand() {
-    return Math.min(this._demand, this.totalProduction);
+    return Math.min(this.demand, this.totalProduction);
   }
 
   get demandCost() {
@@ -88,43 +103,43 @@ export class Province {
   }
 
   addProducer(producer: Producer) {
-    this._producers.push(producer);
-    this._totalproduction += producer.production;
+    this.producers.push(producer);
+    this.totalProduction += producer.production;
   }
 }
 
 class Producer {
-  _province: {
+  province: {
     totalProduction: number;
   };
-  _cost: number;
-  _name: string;
-  _production: number;
+  cost: number;
+  name: string;
+  production: number;
 
   constructor(aProvince, data) {
-    this._province = aProvince;
-    this._cost = data.cost;
-    this._name = data.name;
-    this._production = data.production || 0;
+    this.province = aProvince;
+    this.cost = data.cost;
+    this.name = data.name;
+    this.production = data.production || 0;
   }
 
-  get name() {
-    return this._name;
+  get getName() {
+    return this.name;
   }
-  get cost() {
-    return this._cost;
+  get getCost() {
+    return this.cost;
   }
-  set cost(arg) {
-    this._cost = parseInt(`${arg}`);
+  set setCost(arg) {
+    this.cost = parseInt(`${arg}`);
   }
 
-  get production() {
-    return this._production;
+  get getProduction() {
+    return this.production;
   }
-  set production(amountStr) {
+  set setProduction(amountStr) {
     const amount = parseInt(`${amountStr}`);
     const newProduction = Number.isNaN(amount) ? 0 : amount;
-    this._province.totalProduction += newProduction - this._production;
-    this._production = newProduction;
+    this.province.totalProduction += newProduction - this.production;
+    this.production = newProduction;
   }
 }
