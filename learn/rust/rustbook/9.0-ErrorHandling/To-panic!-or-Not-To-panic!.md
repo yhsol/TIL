@@ -105,3 +105,102 @@ However, having lots of error checks in all of your functions would be verbose a
 Fortunately, you can use Rust’s type system (and thus the type checking the compiler does) to do many of the checks for you. If your function has a particular type as a parameter, you can proceed with your code’s logic knowing that the compiler has already ensured you have a valid value. For example, if you have a type rather than an `Option`, your program expects to have _something_ rather than _nothing_. Your code then doesn’t have to handle two cases for the `Some` and `None` variants: it will only have one case for definitely having a value. Code trying to pass nothing to your function won’t even compile, so your function doesn’t have to check for that case at runtime. Another example is using an unsigned integer type such as `u32`, which ensures the parameter is never negative.
 
 ## Creating Custom Types for Validation
+
+Let's take the idea of using Rust's type system to ensure
+we have a valid one step further and look at creating a custom type for validation.
+Recall the guessing game in Chapter 2 in which
+our code asked the user to guess a number between 1 and 100.
+We never validated that the user's guess was between those numbers
+before checking it against our secret number;
+we only validated that the guess was positive.
+In this case, the consequences were not very dire:
+our output of "Too high" or "Too low" would still be correct.
+But it would be a useful enehancement to guide the user toward valid guesses and have different behavior when a user guesses a number that's out of range versus when a user types, for example, letters instead.
+
+One way to do this would be to parse the guess as an `i32` instead of only a `u32` to allow potentially negative numbers,
+and then add a check for the number being in range, like so:
+
+```rs
+    loop {
+        // --snip--
+
+        let guess: i32 = match guess.trim().parse() {
+            Ok(num) => num,
+            Err(_) => continue,
+        };
+
+        if guess < 1 || guess > 100 {
+            println!("The secret number will be between 1 and 100.");
+            continue;
+        }
+
+        match guess.cmp(&secret_number) {
+            // --snip--
+        }
+    }
+```
+
+The `if` expression checks whether our value is out of range,
+tells the user about the problem,
+and calls `continue` to start the next iteration of the loop and ask for another guess.
+After the `if` expression,
+we can proceed with the comparisons between `guess` and the secret number knowing that `guess` is between 1 and 100.
+
+However, this is not an ideal solution:
+if it was absolutely critical that the program only operated on values
+between 1 and 100, and it had many functions with this requirement,
+having a check like this in every function would be tedious (and might impact performance).
+
+Instead, we can make a new type and put the validations in a function
+to create an instance of the type rather than repeating the validations everywhere.
+That way, it's safe for functions
+to use the new type in their signatures and confidently use the values
+they receive.
+Listing 9-10 shows one way to define a `Guess` type that will only create an instance of `Guess` if the `new` function
+receives a value between 1 and 100.
+
+```rs
+pub struct Guess {
+    value: i32,
+}
+
+impl Guess {
+    pub fn new(value: i32) -> Guess {
+        if value < 1 || value > 100 {
+            panic!("Guess value must be between 1 and 100, got {}.", value)
+        }
+
+        Guess { value }
+    }
+
+    pub fn value(&self) -> i32 {
+        self.value
+    }
+}
+```
+
+Listing 9-10: A `Guess` type that will only continue with values between 1 and 100
+
+First, we define a struct named `Guess` that has a field named `value` that holds an `i32`.
+This is where the number will be stored.
+
+Then we implement an associated function named `new` on `Guess` that
+creates instances of `Guess` values.
+The `new` function is defined to have one parameter named `value` of type
+`i32` and to return a `Guess`.
+The code in the body of the `new` function tests
+`value` to make sure it's between 1 and 100.
+If `value` doesn't pass this test,
+we make a `panic!` call,
+which will alert the programmer who is writing the calling code
+that they have a bug they need to fix,
+because creating a `Guess` with a `value` outside this range
+would violate the contract that `Guess::new` is relying on.
+The conditions in which `Guess::new` might panic should be discussed in its public-facing API documentation;
+we'll cover documentation conventions
+indicating the possibility of a `panic!` in the API documentation that you
+create in Chapter 14.
+If `value` does pass the test,
+we create a new `Guess`
+with its `value` field set to the `value` parameter and
+return the `Guess`.
