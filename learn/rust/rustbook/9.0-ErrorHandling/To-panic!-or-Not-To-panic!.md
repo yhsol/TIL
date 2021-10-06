@@ -204,3 +204,33 @@ If `value` does pass the test,
 we create a new `Guess`
 with its `value` field set to the `value` parameter and
 return the `Guess`.
+
+Next, we implement a method named `value` that borrows `self`,
+doesn't have any other parameters,
+and returns an `i32`.
+This kind of method is sometimes called a _getter_,
+because its purpose is to get some data from its fields and return it.
+This public method is necessary
+because the `value` field of the `Guess`
+struct is private.
+It's important that the `value` field be private so code using the `Guess` struct is not allowed
+to set `value` directly:
+code outside the module _must_ use the `Guess::new` function
+to create an instance of `Guess`,
+thereby ensuring there's no way for a `Guess` to have a `value` that hasn't been checked by the conditions in the `Guess::new` function.
+
+A function that has a parameter or returns only numbers between 1 and 100 could then declare in its signature that it takes or returns a `Guess` rather than an `i32` and wouldn’t need to do any additional checks in its body.
+
+## Summary
+
+Rust's error handling features are desinged to help you write more robust code.
+The `panic!` macro signals that your program is in a state it
+can't handle and lets you tell the process to stop instead of
+trying to proceed with invalid or incorrect values.
+The `Result` enum uses Rust's type system to indicate that
+operations might fail in a way that you code could recover from.
+You can use `Result` to tell code that calls your code that it needs to handle potential success or failure as well.
+Using `panic!` and `Result` in the apporpriate situations will make your code more reliable in the face of inevitable problems.
+
+Now that you've seen useful ways that the standard library uses generics with the `Option` and `Result` enums,
+we'll talk about how generics work and how you can use them in you code.
