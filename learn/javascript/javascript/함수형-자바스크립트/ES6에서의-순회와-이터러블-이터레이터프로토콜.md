@@ -139,3 +139,121 @@ for (const a of map) console.log(a);
       //=> "b"
       //=> "c"
       ```
+
+## 사용자 정의 이터러블, 이터러블/이터레이터 프로토콜 정의
+
+- 이터러블 정의
+
+  1. Symbol.iterator 메서드를 구현하고 있어야 함.
+  2. Symbol.iterator 메서드는 iterator 를 반환해야 함.
+  3. iterator 는 next 를 메서드로 가지고 있음
+  4. next 는 value 와 done 을 가지고 있는 객체를 리턴해야 함.
+
+  ```js
+  const iterable = {
+    // 1
+    [Symbol.iterator]() {
+      // 2
+      return {
+        // 3
+        next() {
+          // 4
+          return { value, done };
+        },
+      };
+    },
+  };
+  ```
+
+  - 3, 2, 1 형태로 반환하는 이터러블 정의
+
+  ```js
+  const iterable = {
+    [Symbol.iterator]() {
+      let i = 3;
+      return {
+        next() {
+          return i === 0 ? { done: true } : { value: i--, done: false };
+        },
+      };
+    },
+  };
+  let iterator = iterable[Symbol.iterator]();
+  console.log(iterator.next()); //=> {value: 3, done: false}
+  console.log(iterator.next()); //=> {value: 2, done: false}
+  console.log(iterator.next()); //=> {value: 1, done: false}
+  console.log(iterator.next()); //=> {done: true}
+
+  for (const a of iterable) console.log(a);
+  ```
+
+  - 설명
+
+    - iterable 에 Symbol.iterator 가 구현되어 있기 때문에 for..of 문에 들어갈 수 있음
+    - Symbol.iterator 를 실행했을 때 객체가 리턴됨
+    - 내부적으로 next 를 실행하면서 a 에 value 를 하나씩 담게 되면서 실행하게 됨.
+    - 아직 자바스크립트의 이터러블/이터레이터 프로토콜의 모든 속성을 구현한 것은 아님.
+
+      - 설명
+
+        ```js
+        const arr2 = [1, 2, 3];
+        let iter2 = arr2[Symbol.iterator]();
+        iter2.next();
+        console.log(iter2[Symbol.iterator]() === iter2);
+        //=> true
+        //=> Symbol.iterator 를 실행한 값은 자기 자신 => well formed iterator
+        // for (const a of arr2) console.log(a);
+        for (const a of iter2) console.log(a);
+        //=> 2
+        //=> 3
+        ```
+
+        - 잘 구현된 이터러블 객체는 이터레이터를 만들어서 순회했을 때도 순회가 됨. 그리고 반복문에 앞서 next 를 진행했을 때 반복문에서는 next 이후 값에 대한 반복이 진행됨
+        - 이터레이터가 자기 자신을 반환하는 심볼 이터레이터 메서드를 가지고 있을 때, 웰 폼드 이터러블, 웰 폼드 이터레이터라고 할 수 있음.
+        - 위 조건에 맞춰 커스텀 이터러블 재작성
+          ```js
+          const iterable = {
+            [Symbol.iterator]() {
+              let i = 3;
+              return {
+                next() {
+                  return i === 0 ? { done: true } : { value: i--, done: false };
+                },
+                [Symbol.iterator]() {
+                  return this;
+                },
+              };
+            },
+          };
+          ```
+
+  - 이터러블/이터레이터 패턴은 오픈소스를 비롯해 다양한 곳에서 사용됨.
+    - Web
+      - `document.querySelectorAll('*')`
+      ```js
+      for (const a of document.querySelector("*")) console.log(a);
+      // 위와 같이 순회할 수 있는 이유는 내부에 Symbol.iterator 가 구현되어 있기 때문
+      const all = document.querySelectorAll("*");
+      let iter = all[Symbol.iterator]();
+      console.log(iter.next());
+      console.log(iter.next());
+      console.log(iter.next());
+      ```
+
+## 전개 연산자
+
+- 전개 연산자도 이터러블/이터레이터 프로토콜을 따름
+- `arr[Symbol.iterator] = null;` 이후에 전개 연산자 사용시 에러
+- 그렇기 때문에 이터러블/이터레이터를 따르는 값들을 전개 연사자와 사용 가능
+- `console.log([...a, ...someArr, ...someSet, ...someMap, ...someMap.values(), ...someMap.keys())])`
+- 자바스크립트, ES6 에서 이터러블/이터레이터를 잘 이해하고 사용하자!
+- 객체의 프로퍼티에도 이터레이터 구현되어 있음
+  ```js
+  const t = { t: "t" };
+  console.log(t.t[Symbol.iterator]);
+  //=> StringIterator {}[[Prototype]]: String Iteratornext: ƒ next()Symbol(Symbol.toStringTag): "String Iterator"[[Prototype]]: Object
+  let iter = t.t[Symbol.iterator]();
+  iter.next();
+  //=> {value: 't', done: false}
+  ```
