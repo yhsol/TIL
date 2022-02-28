@@ -147,14 +147,18 @@ for (const p of products) {
   - 외부의 경우에는 이터러블 프로토콜을 따르는 것을 통해서 다형성을 지원해 줄 수 있음.
 
 ```js
+// 보조함수 활용하여 로직 운영
 const filter = (fn, iter) => {
   let result = [];
-  for (const a of iter) if (fn(a)) result.push(a);
+  for (const a of iter) {
+    if (fn(a)) result.push(a);
+  }
   return result;
 };
 
 console.log(filter((p) => p.price < 20000, products));
 console.log(filter((n) => n % 2, [1, 2, 3, 4]));
+// 이터러블 프로토콜을 활용
 console.log(
   filter(
     (n) => n % 2,
@@ -168,3 +172,81 @@ console.log(
   )
 );
 ```
+
+## reduce
+
+- reduce 는 값을 축약하는 함수
+- 이터러블 값을 어떤 하나의 다른 값으로 축약해 나가는 함수
+
+```js
+const nums = [1, 2, 3, 4, 5];
+// 위와 같은 값들을 다 더해서 하나의 값으로 만들려는 경우
+
+// 명령적으로 작성
+// 어떤 특정한 값을 계속해서 순회하면서 하나의 값으로 누적해 나갈 때 사용
+let total = 0;
+for (const n of nums) {
+  total = total + n;
+}
+console.log(total);
+
+// reduce
+const reduce = (fn, acc, iter) => {
+  for (const a of iter) {
+    acc = fn(acc, a);
+  }
+
+  // 함수 외부 세상을 변경하지 않고 리턴함.
+  return acc;
+};
+
+const add = (a, b) => a + b;
+console.log(reduce(add, 0, [1, 2, 3, 4, 5]));
+//=> 15
+// reduce 의 동작을 풀어보면 아래와 같이 동작하게 되는 원리
+console.log(add(add(add(add(add(0, 1), 2), 3), 4), 5));
+
+// 자바스크립트의 reduce 동작
+// acc 의 기본값을 제공하지 않아도 알아서 기본값을 설정함
+console.log(reduce(add, [1, 2, 3, 4, 5])); // 기본값 0 생략
+console.log(reduce(add, 1, [2, 3, 4, 5])); // 제공된 배열의 첫번째 값을 꺼내서 기본값으로 사용함
+
+// 구현한 함수 개선
+const reduce = (fn, acc, iter) => {
+  // 순서대로 읽기 때문에 기본값이 빠지건데 iter 값 없음으로 판단함.
+  if (!iter) {
+    iter = acc[Symbol.iterator]();
+    acc = iter.next().value;
+  }
+
+  for (const a of iter) {
+    acc = fn(acc, a);
+  }
+
+  // 함수 외부 세상을 변경하지 않고 리턴함.
+  return acc;
+};
+```
+
+- reduce 는 보조 함수를 통해서 어떻게 축약할지를 완전히 위임함.
+
+  - 그렇게 때문에 배열과 같은 특정 형태가 아니더라도 보조 함수 정의에 따라 특정 값으로 축야해 나갈 수 있음
+
+  - products
+
+  ```js
+  const productions = [
+    { name: "반팔티", price: 15000 },
+    { name: "긴팔티", price: 20000 },
+    { name: "핸드폰케이스", price: 15000 },
+    { name: "후드티", price: 30000 },
+    { name: "바지", price: 25000 },
+  ];
+
+  log(
+    reduce((total_price, product) => total_price + prodocut.price, 0, products)
+  );
+  ```
+
+  - 보조함수를 통해 안쪽에 있는 값에 다형성을 지원함
+  - 이터러블을 통해서 외부 값에 대한 다형성 지원
