@@ -250,3 +250,33 @@ const reduce = (fn, acc, iter) => {
 
   - 보조함수를 통해 안쪽에 있는 값에 다형성을 지원함
   - 이터러블을 통해서 외부 값에 대한 다형성 지원
+
+```js
+import { filter, map, reduce } from "./mapFilterReduce";
+
+const products = [
+  { name: "반팔티", price: 15000 },
+  { name: "긴팔티", price: 20000 },
+  { name: "핸드폰케이스", price: 15000 },
+  { name: "후드티", price: 30000 },
+  { name: "바지", price: 25000 },
+];
+
+const prices = map((p) => p.price, products);
+
+const filteredPrices = map(
+  (p) => p.price,
+  filter((p) => p.price < 20000, products)
+);
+
+const add = (a, b) => a + b;
+const sumOfFilteredPrices = reduce(
+  add,
+  map(
+    (p) => p.price,
+    filter((p) => p.price < 20000, products)
+  )
+);
+```
+
+함수형 프로그래밍에서는 함수들을 중첩하고, 함수를 연속적으로 실행하면서 원하는 값으로 나아감.
