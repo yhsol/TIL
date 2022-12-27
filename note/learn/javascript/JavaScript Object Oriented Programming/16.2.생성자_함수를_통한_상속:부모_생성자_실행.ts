@@ -37,3 +37,5 @@ let kim = new PersonPlus("kim", 10, 20, 30);
 console.log("kim", kim);
 console.log("kim.sum(): ", kim.sum());
 console.log("kim.avg(): ", kim.avg());
+
+export {};
